@@ -51,7 +51,7 @@ public class SendNotif extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                databaseReference.child(mUser.getUid()).child("token").addListenerForSingleValueEvent(new ValueEventListener() {
+                databaseReference.child("JStgpYnwlBTg9HEYN2eH1UQG7fS2").child("token").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Log.d(TAG, "onDataChange: ");
@@ -73,12 +73,13 @@ public class SendNotif extends AppCompatActivity {
         String refreshToken= FirebaseInstanceId.getInstance().getToken();
         Token token= new Token(refreshToken);
         databaseReference.child(mUser.getUid()).setValue(token);
+        Log.d(TAG, "UpdateToken: ");
     }
 
     public void sendNotifications(String usertoken, String title, String message) {
         Data data = new Data(title, message);
         NotificationSender sender = new NotificationSender(data, usertoken);
-
+        Log.d(TAG, "sendNotifications: ");
         apiService.sendNotifcation(sender).enqueue(new Callback<MyResponse>() {
             @Override
             public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
@@ -87,13 +88,15 @@ public class SendNotif extends AppCompatActivity {
 
                     if (response.body().success != 1) {
                         Toast.makeText(SendNotif.this, "Failed ", Toast.LENGTH_LONG);
+                    }else{
+                        Toast.makeText(SendNotif.this, "Success", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<MyResponse> call, Throwable t) {
-
+                Toast.makeText(SendNotif.this, ""+t.toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }
